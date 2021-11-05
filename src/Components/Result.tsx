@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 function Result() {
     const [data, setData] = useState({
         kind: 'default',
-        items: [], 
         totalItems: 0
     });
 
