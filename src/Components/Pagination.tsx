@@ -17,14 +17,16 @@ type ChildProps= {
 }
 
 const Pagination: FC<ChildProps> = ({data, title, pageLimit, dataLimit}) : ReactElement => {
-	const [pages] = useState(Math.round(data.length / dataLimit));
+	const [pages] = useState(Math.ceil(data.length / dataLimit));
 	const [currentPage, setCurrentPage] = useState(1);
   
 	function goToNextPage() {
-		setCurrentPage((page) => page + 1);
+		if (currentPage < pages)
+			setCurrentPage((page) => page + 1)
 	}
   
 	function goToPreviousPage() {
+		if (currentPage > 1)
 		setCurrentPage((page) => page - 1);
 	}
   
@@ -58,7 +60,7 @@ const Pagination: FC<ChildProps> = ({data, title, pageLimit, dataLimit}) : React
 			  {getPaginationGroup().map((item, index) => (
         	<li className="page-item" onClick={changePage}>
           		<a className="page-link">{item}</a>
-			</li>
+					</li>
       		))}
 		  	<li className="page-item" onClick={goToNextPage}><a className="page-link">Next</a></li>
 		  </ul>
