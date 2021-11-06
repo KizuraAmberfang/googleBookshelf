@@ -1,6 +1,5 @@
 import React from 'react';
-import {useState, useContext, createContext} from "react";
-import ReactDOM from 'react-dom';
+import {useState, createContext} from "react";
 import './App.css';
 import Result from './Components/Result'
 import 'bootstrap/dist/css/bootstrap.css';
@@ -10,6 +9,7 @@ const InputContext = createContext("");
 function App() {
 
 	const [inputValue, setInputValue] = useState("");
+	const [row, setRow] = useState(20);
 
   	return (
     	<div className="App">
