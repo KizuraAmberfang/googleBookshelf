@@ -45,16 +45,6 @@ function Result({ input }: { input: string }, { row }: { row: number }) {
 
   return (
     <div>
-      {str}
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      {data.totalItems}
-      <br />
-      Quindi sono {page} pagine
-      <br />
       <div>
         {data.totalItems > 0 ? (
           <>
@@ -69,7 +59,6 @@ function Result({ input }: { input: string }, { row }: { row: number }) {
           <h1>No Posts to display</h1>
         )}
       </div>
-      {JSON.stringify(data.items)}
     </div>
   );
 }
