@@ -1,25 +1,39 @@
 import React from 'react';
-import {useState, createContext} from "react";
 import './App.css';
-import Result from './Components/Result'
 import 'bootstrap/dist/css/bootstrap.css';
 
-const InputContext = createContext("");
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Main from './Pages/Main';
+import Book from './Pages/Book';
 
 function App() {
 
-	const [inputValue, setInputValue] = useState("");
-	const [row, setRow] = useState(20);
-
   	return (
     	<div className="App">
-			<InputContext.Provider value={inputValue}>
-			<nav className="navbar navbar-expand-sm bg-light">
-				<input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-            </nav>
-	        	{/* <Navbar/> */}
-    	      	<Result input={inputValue}/>
-			</InputContext.Provider>
+			<Router>
+				<Routes>
+				<Route path='/' element={<Main />} />
+				<Route path='/book' element={<Book />} />
+				</Routes>
+			</Router>
+		{/* </>
+	    <Router>
+      		<div>
+				<Link to="/">Main</Link>
+			</div>
+			<div>
+				<Link to="/book">Book</Link>
+			</div>
+		<hr />
+		<Switch>
+			<Route exact path="/">
+				<Main />
+			</Route>
+			<Route path="/blogs">
+				<Book />
+			</Route>
+		</Switch>
+		</Router> */}
       	</div>
   );
 }

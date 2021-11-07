@@ -10,6 +10,7 @@ import Rows from "./Row";
 
 type ChildProps = {
   data: any[];
+  nitem: number;
   title: string;
   pageLimit: number;
   dataLimit: number;
@@ -17,12 +18,12 @@ type ChildProps = {
 
 const Pagination: FC<ChildProps> = ({
   data,
+  nitem,
   title,
   pageLimit,
   dataLimit
 }): ReactElement => {
-  console.log(data.length);
-  const [pages] = useState(Math.ceil(data.length / dataLimit));
+  var pages = (Math.ceil(nitem / dataLimit));
   const [currentPage, setCurrentPage] = useState(1);
 
   function goToNextPage() {
@@ -53,6 +54,7 @@ const Pagination: FC<ChildProps> = ({
   return (
     <div>
       <h1>{title}</h1>
+	  {nitem}/{dataLimit}={pages}
       <div>
         {getPaginatedData().map((d: any, idx: any) => (
           <Rows key={idx} data={d} />
