@@ -10,28 +10,48 @@ function Book () {
 		volumeInfo: { publisher },
 		volumeInfo: { publishedDate },
 		volumeInfo: { pageCount},
-		volumeInfo: { language }
+		volumeInfo: { language },
+		volumeInfo: { infoLink }
 	  } = location.state
+	var image = location.state.volumeInfo?.imageLinks?.thumbnail;
 	return (
-		// <div className="container">
-		// 	<h1>{title}</h1>
-		// 	<h4>{subtitle}</h4>
 		// 	di {authors}
 		// 	Editore: {publisher}
 		// 	Pagine: {pageCount}
 		// 	Lingua: {language}
 		// 	Descrizione: {description}
-		// </div>
-		<div className="container">
-		<div className="card mx-auto">
-			<div className="card-header">Header</div>
-			<div className="card-body">Content</div>
-				<h4 className="card-title">Card title</h4>
-    			<p className="card-text">Some example text. Some example text.</p>
-			    <a href="#" className="card-link">Card link</a>
-			    <a href="#" className="card-link">Another link</a>
-			<div className="card-footer">Footer</div>
-		</div>
+		<div className="container py-5">
+		<div className="card">
+			<div className="card-header">
+				<h1>{title}</h1>
+				{ subtitle ? 
+				<><br /><h4>{subtitle}</h4></> : <></>
+				}
+			</div>
+			<div className="card-body">
+				<div className="row no-gutters">
+					{ image ? 
+					<div className="col-auto">
+						<img src={image} className="img-fluid" alt="" />
+					</div> : <></>
+					}
+					<div className="col">
+						<div className="card-block px-2">
+							{ description ?
+								<p className="card-text">{description}</p>
+								: <p>Nessuna descrizione disponibile</p>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className="card-footer">
+				{ infoLink ?
+					<a href={infoLink} className="card-link">Maggiori informazioni</a>
+					: <>Maggiori Informazioni non disponibili</>
+				}
+			</div>
+			</div>
 		</div>
 	);
 }

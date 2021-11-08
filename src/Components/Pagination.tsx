@@ -2,65 +2,104 @@ import { useState, FC, ReactElement } from "react";
 import Rows from "./Row";
 // data: i dati che dobbiamo paginare
 // RenderComponent: il componenente usato per renderizzare, in questo caso Row
-// title: il titolo della pagina
-// pageLimit: numero di pagine massimo nella paginazione (faremo 5)
 // dataLimit: il numero di elementi (5, 10, 15, 20)
 
-// mancano da mettere dei limitatori!
-
 type ChildProps = {
-  data: any[];
-  nitem: number;
-  title: string;
-  pageLimit: number;
-  dataLimit: number;
+  	data: any[];
+	query: string;
+	nitem: number;
+	dataLimit: number;
 };
 
 const Pagination: FC<ChildProps> = ({
-  data,
-  nitem,
-  title,
-  pageLimit,
-  dataLimit
+  	data,
+	query,
+	nitem,
+	dataLimit
 }): ReactElement => {
   var pages = (Math.ceil(nitem / dataLimit));
+
   const [currentPage, setCurrentPage] = useState(1);
+
+  var str = "";
+
+  const [list, setList] = useState({
+    kind: "default",
+    totalItems: 0,
+    items: []
+  });
+
+  const getList = async () => {
+    const list = await fetch(str, { method: "GET" }).then((res) => res.json());
+    setList(list);
+  };
+  
+  function goToFirstPage() {
+    if (currentPage < pages) setCurrentPage(1);
+    const startIndex = currentPage * dataLimit - dataLimit;
+    const endIndex = startIndex + dataLimit;
+	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	getList();
+}
+
+  function goToLastPage() {
+    if (currentPage < pages) setCurrentPage(pages);
+    const startIndex = currentPage * dataLimit - dataLimit;
+    const endIndex = startIndex + dataLimit;
+	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	getList();
+}
 
   function goToNextPage() {
     if (currentPage < pages) setCurrentPage((page) => page + 1);
-  }
+    const startIndex = currentPage * dataLimit - dataLimit;
+    const endIndex = startIndex + dataLimit;
+	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	getList();
+}
 
   function goToPreviousPage() {
     if (currentPage > 1) setCurrentPage((page) => page - 1);
-  }
+    const startIndex = currentPage * dataLimit - dataLimit;
+    const endIndex = startIndex + dataLimit;
+	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	getList();
+}
 
   function changePage(event: any) {
     const pageNumber = Number(event.target.textContent);
     setCurrentPage(pageNumber);
+    const startIndex = currentPage * dataLimit - dataLimit;
+    const endIndex = startIndex + dataLimit;
+	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	getList();
   }
 
   // restituisce i dati che pagineremo
   const getPaginatedData = () => {
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-    return data.slice(startIndex, endIndex);
+    // const startIndex = currentPage * dataLimit - dataLimit;
+    // const endIndex = startIndex + dataLimit;
+	// str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	// getList();
+    return list.items;
   };
 
   const getPaginationGroup = () => {
-    let start = Math.floor((currentPage - 1) / pageLimit) * pageLimit;
-    return new Array(pageLimit).fill(1).map((_, idx) => start + idx + 1);
+    // let start = Math.floor((currentPage - 1) / 5) * 5;
+    let start = currentPage - 3;
+	if (start < 1)
+		start = 0;
+	if (start + 5 > pages)
+		start = pages - 5;
+	return new Array(5).fill(1).map((_, idx) => start + idx + 1);
   };
 
   return (
-    <div>
-      <h1>{title}</h1>
-	  {nitem}/{dataLimit}={pages}
-      <div>
-        {getPaginatedData().map((d: any, idx: any) => (
-          <Rows key={idx} data={d} />
-        ))}
-      </div>
+    <div className="position-sticky">
       <ul className="pagination justify-content-center">
+	  	<li className="page-item" onClick={goToFirstPage}>
+          <a className="page-link">First</a>
+        </li>
         <li className="page-item" onClick={goToPreviousPage}>
           <a className="page-link">Previous</a>
         </li>
@@ -72,7 +111,19 @@ const Pagination: FC<ChildProps> = ({
         <li className="page-item" onClick={goToNextPage}>
           <a className="page-link">Next</a>
         </li>
+		<li className="page-item" onClick={goToLastPage}>
+          <a className="page-link">{pages}</a>
+        </li>
       </ul>
+      <div>
+		{ list.items ? 
+		<>
+        {getPaginatedData().map((d: any, idx: any) => (
+          <Rows key={idx} data={d} />
+        ))
+		}
+		</> : <>Non ci sono elementi visualizzabili</>}
+      </div>
     </div>
   );
 };

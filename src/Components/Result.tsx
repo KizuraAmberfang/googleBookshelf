@@ -18,10 +18,7 @@ const Result: FC<ChildProps> = ({
 
   const query = new URLSearchParams({ q: input });
 
-  const str =
-    "https://www.googleapis.com/books/v1/volumes?" +
-    query +
-    "&maxResults=" + row + "&startIndex=" + 0;
+  const str = "https://www.googleapis.com/books/v1/volumes?" + query;
 
   const getData = async () => {
     const data = await fetch(str, { method: "GET" }).then((res) => res.json());
@@ -34,16 +31,14 @@ const Result: FC<ChildProps> = ({
 
   return (
     <div>
-		{str}
+		{data.totalItems}
       <div>
         {data.totalItems > 0 ? (
           <>
-		  	{data.totalItems} / {row}
             <Pagination
               data={data.items}
+			  query={str}
 			  nitem={data.totalItems}
-              title="Library"
-              pageLimit={5}
               dataLimit={row}
             />
           </>
