@@ -1,14 +1,18 @@
-import { useState, useEffect, FC, ReactElement } from "react";
+import { useState, useEffect, FC, ReactElement, Dispatch } from "react";
 import Pagination from "./Pagination";
 
 type ChildProps = {
 	input: string;
 	row: number;
+	currentPage : number;
+	setCurrentPage : Dispatch<React.SetStateAction<number>>;
   };
 
 const Result: FC<ChildProps> = ({
 	input,
-	row
+	row,
+	currentPage,
+	setCurrentPage
   }): ReactElement => {
   const [data, setData] = useState({
     kind: "default",
@@ -18,7 +22,7 @@ const Result: FC<ChildProps> = ({
 
   const query = new URLSearchParams({ q: input });
 
-  const str = "https://www.googleapis.com/books/v1/volumes?" + query;
+  const str = "https://www.googleapis.com/books/v1/volumes?" + query + "&filter=full&projection=lite";
 
   const getData = async () => {
     const data = await fetch(str, { method: "GET" }).then((res) => res.json());
@@ -31,7 +35,6 @@ const Result: FC<ChildProps> = ({
 
   return (
     <div>
-		{data.totalItems}
       <div>
         {data.totalItems > 0 ? (
           <>
@@ -40,6 +43,8 @@ const Result: FC<ChildProps> = ({
 			  query={str}
 			  nitem={data.totalItems}
               dataLimit={row}
+			  currentPage={currentPage}
+			  setCurrentPage={setCurrentPage}
             />
           </>
         ) : (

@@ -1,4 +1,4 @@
-import { useState, FC, ReactElement } from "react";
+import { useState, FC, ReactElement, Dispatch } from "react";
 import Rows from "./Row";
 // data: i dati che dobbiamo paginare
 // RenderComponent: il componenente usato per renderizzare, in questo caso Row
@@ -9,19 +9,22 @@ type ChildProps = {
 	query: string;
 	nitem: number;
 	dataLimit: number;
+	currentPage : number;
+	setCurrentPage : Dispatch<React.SetStateAction<number>>;
 };
 
 const Pagination: FC<ChildProps> = ({
   	data,
 	query,
 	nitem,
-	dataLimit
+	dataLimit,
+	currentPage,
+	setCurrentPage
 }): ReactElement => {
   var pages = (Math.ceil(nitem / dataLimit));
 
-  const [currentPage, setCurrentPage] = useState(1);
-
-  var str = "";
+  var loader : number = 0;
+  var str : string = "";
 
   const [list, setList] = useState({
     kind: "default",
@@ -30,6 +33,7 @@ const Pagination: FC<ChildProps> = ({
   });
 
   const getList = async () => {
+	loader = 1;
     const list = await fetch(str, { method: "GET" }).then((res) => res.json());
     setList(list);
   };
@@ -77,15 +81,13 @@ const Pagination: FC<ChildProps> = ({
 
   // restituisce i dati che pagineremo
   const getPaginatedData = () => {
-    // const startIndex = currentPage * dataLimit - dataLimit;
-    // const endIndex = startIndex + dataLimit;
-	// str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
-	// getList();
-    return list.items;
+	if (currentPage == 0)
+		return (data.slice(0, dataLimit));
+	else
+	    return list.items;
   };
 
   const getPaginationGroup = () => {
-    // let start = Math.floor((currentPage - 1) / 5) * 5;
     let start = currentPage - 3;
 	if (start < 1)
 		start = 0;
@@ -104,7 +106,7 @@ const Pagination: FC<ChildProps> = ({
           <a className="page-link">Previous</a>
         </li>
         {getPaginationGroup().map((item, index) => (
-          <li className="page-item" onClick={changePage}>
+          <li className={ item == currentPage ? "page-item active" : "page-item"} onClick={changePage}>
             <a className="page-link">{item}</a>
           </li>
         ))}
@@ -112,10 +114,11 @@ const Pagination: FC<ChildProps> = ({
           <a className="page-link">Next</a>
         </li>
 		<li className="page-item" onClick={goToLastPage}>
-          <a className="page-link">{pages}</a>
+          <a className="page-link">Last ({pages})</a>
         </li>
       </ul>
       <div>
+		  { (loader == 1) ? <div className="spinner-grow text-info"></div> : <></>}
 		{ list.items ? 
 		<>
         {getPaginatedData().map((d: any, idx: any) => (
