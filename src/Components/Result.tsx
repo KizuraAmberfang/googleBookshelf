@@ -20,13 +20,17 @@ const Result: FC<ChildProps> = ({
     items: []
   });
 
+  const [loader, setLoader] = useState(0);
+
   const query = new URLSearchParams({ q: input });
 
-  const str = "https://www.googleapis.com/books/v1/volumes?" + query + "&filter=full&projection=lite";
+  const str = "https://www.googleapis.com/books/v1/volumes?" + query + "&projection=lite&maxResults=20";
 
   const getData = async () => {
+	setLoader(0);
     const data = await fetch(str, { method: "GET" }).then((res) => res.json());
     setData(data);
+	setLoader(1);
   };
 
   useEffect(() => {
@@ -45,6 +49,8 @@ const Result: FC<ChildProps> = ({
               dataLimit={row}
 			  currentPage={currentPage}
 			  setCurrentPage={setCurrentPage}
+			  loader={loader}
+			  setLoader={setLoader}
             />
           </>
         ) : (

@@ -17,9 +17,9 @@ function Rows(props: any) {
   if (smallThumbnail == undefined)
 	smallThumbnail = ""
   return ( props.data ?
-    <div className="container py-3 my-3 bg-light border">
+    <div className="container-lg container-fluid py-3 my-3 bg-light border">
       <div className="row">
-        <div className="col-2">
+        <div className="col-lg-2">
 			<Link to="/Book" state={props.data}>
 				{ smallThumbnail != "" ?
 				<img src={smallThumbnail} className="img-thumbnail" alt="img" />
@@ -28,14 +28,14 @@ function Rows(props: any) {
 				}
 			</Link>
 		</div>
-        <div className="col-10">
-        	<div className="row">
+        <div className="col-lg-10">
+        	<div className="row text-left text-lg-left">
             	<h2>{title}</h2>
 			</div>
-			<div className="row">
+			<div className="row text-left text-lg-left">
             	<h4>{subtitle}</h4>
           	</div>
-          <div className="row">{authors}</div>
+          <div className="row text-left text-lg-left">{authors}</div>
           <div className="row">
 			{ publisher ? 
 				<>Editore: {publisher}</> : <></>

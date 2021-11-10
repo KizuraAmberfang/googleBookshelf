@@ -1,8 +1,5 @@
-import { useState, FC, ReactElement, Dispatch } from "react";
+import React, { useState, FC, ReactElement, Dispatch } from "react";
 import Rows from "./Row";
-// data: i dati che dobbiamo paginare
-// RenderComponent: il componenente usato per renderizzare, in questo caso Row
-// dataLimit: il numero di elementi (5, 10, 15, 20)
 
 type ChildProps = {
   	data: any[];
@@ -11,7 +8,11 @@ type ChildProps = {
 	dataLimit: number;
 	currentPage : number;
 	setCurrentPage : Dispatch<React.SetStateAction<number>>;
+	loader : number;
+	setLoader : Dispatch<React.SetStateAction<number>>;
 };
+
+var str : string = "";
 
 const Pagination: FC<ChildProps> = ({
   	data,
@@ -19,12 +20,14 @@ const Pagination: FC<ChildProps> = ({
 	nitem,
 	dataLimit,
 	currentPage,
-	setCurrentPage
+	setCurrentPage,
+	loader,
+	setLoader
 }): ReactElement => {
   var pages = (Math.ceil(nitem / dataLimit));
 
-  var loader : number = 0;
-  var str : string = "";
+  if (currentPage == 1)
+	  str = query;
 
   const [list, setList] = useState({
     kind: "default",
@@ -33,58 +36,62 @@ const Pagination: FC<ChildProps> = ({
   });
 
   const getList = async () => {
-	loader = 1;
+	setLoader(0);
     const list = await fetch(str, { method: "GET" }).then((res) => res.json());
+	setLoader(1);
     setList(list);
   };
   
   function goToFirstPage() {
-    if (currentPage < pages) setCurrentPage(1);
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+    setCurrentPage(1);
+    const startIndex = 0;
+	str = query + "&startIndex=" + startIndex;
 	getList();
 }
 
   function goToLastPage() {
-    if (currentPage < pages) setCurrentPage(pages);
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+    setCurrentPage(pages);
+    const startIndex = pages * dataLimit - dataLimit;
+	str = query + "&startIndex=" + startIndex;
 	getList();
 }
 
   function goToNextPage() {
-    if (currentPage < pages) setCurrentPage((page) => page + 1);
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+    var startIndex = currentPage * dataLimit - dataLimit;
+	if (currentPage < pages) 
+	{
+		setCurrentPage((page) => page + 1);
+    	startIndex = startIndex + dataLimit;
+	}
+	str = query + "&startIndex=" + startIndex;
 	getList();
 }
 
   function goToPreviousPage() {
-    if (currentPage > 1) setCurrentPage((page) => page - 1);
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+	var startIndex = currentPage * dataLimit - dataLimit;
+    if (currentPage > 1) 
+	{
+		setCurrentPage((page) => page - 1);
+    	startIndex = startIndex - dataLimit;
+	}
+	str = query + "&startIndex=" + startIndex;
 	getList();
 }
 
   function changePage(event: any) {
     const pageNumber = Number(event.target.textContent);
     setCurrentPage(pageNumber);
-    const startIndex = currentPage * dataLimit - dataLimit;
-    const endIndex = startIndex + dataLimit;
-	str = query + "&maxResults=" + dataLimit + "&startIndex=" + startIndex;
+    const startIndex = pageNumber * dataLimit - dataLimit;
+	str = query + "&startIndex=" + startIndex;
 	getList();
   }
 
   // restituisce i dati che pagineremo
   const getPaginatedData = () => {
-	if (currentPage == 0)
+	if (currentPage == 1)
 		return (data.slice(0, dataLimit));
 	else
-	    return list.items;
+	    return (list.items.slice(0, dataLimit));
   };
 
   const getPaginationGroup = () => {
@@ -118,7 +125,7 @@ const Pagination: FC<ChildProps> = ({
         </li>
       </ul>
       <div>
-		  { (loader == 1) ? <div className="spinner-grow text-info"></div> : <></>}
+		  { loader ? <></> : <div className="spinner-grow text-info"></div>}
 		{ list.items ? 
 		<>
         {getPaginatedData().map((d: any, idx: any) => (

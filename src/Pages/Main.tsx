@@ -24,7 +24,7 @@ const Main: FC<ChildProps> = ({
 	return (
 	<InputContext.Provider value={inputValue}>
 	<div>
-		<input className="mt-3" type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+		<input className="mt-3" type="text" value={inputValue} onChange={(e) => {setInputValue(e.target.value); setCurrentPage(1)}} />
 		<ul className="pagination justify-content-center my-3">
 			<li className="page-item disabled"><a className="page-link disabled" href="javascript:;">Righe</a></li>
   			<li className={ row == 5 ? "page-item active" : "page-item"}><a className="page-link" href="javascript:;" onClick={() => setRow(5)}>5</a></li>
