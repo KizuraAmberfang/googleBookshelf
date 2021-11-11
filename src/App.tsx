@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import './custom.scss';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Main from './Pages/Main';

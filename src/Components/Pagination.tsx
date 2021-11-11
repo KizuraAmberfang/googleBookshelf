@@ -26,7 +26,7 @@ const Pagination: FC<ChildProps> = ({
 }): ReactElement => {
   var pages = (Math.ceil(nitem / dataLimit));
 
-  if (currentPage == 1)
+  if (currentPage === 1)
 	  str = query;
 
   const [list, setList] = useState({
@@ -80,15 +80,18 @@ const Pagination: FC<ChildProps> = ({
 
   function changePage(event: any) {
     const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
-    const startIndex = pageNumber * dataLimit - dataLimit;
-	str = query + "&startIndex=" + startIndex;
-	getList();
+	if (pageNumber !== currentPage)
+	{
+    	setCurrentPage(pageNumber);
+    	const startIndex = pageNumber * dataLimit - dataLimit;
+		str = query + "&startIndex=" + startIndex;
+		getList();
+	}
   }
 
   // restituisce i dati che pagineremo
   const getPaginatedData = () => {
-	if (currentPage == 1)
+	if (currentPage === 1)
 		return (data.slice(0, dataLimit));
 	else
 	    return (list.items.slice(0, dataLimit));
@@ -103,36 +106,56 @@ const Pagination: FC<ChildProps> = ({
 	return new Array(5).fill(1).map((_, idx) => start + idx + 1);
   };
 
+  const miniGetPaginationGroup = () => {
+    let start = currentPage - 2;
+	if (start < 1)
+		start = 0;
+	if (start + 3 > pages)
+		start = pages - 3;
+	return new Array(3).fill(1).map((_, idx) => start + idx + 1);
+  };
+
   return (
-    <div className="position-sticky">
-      <ul className="pagination justify-content-center">
-	  	<li className="page-item" onClick={goToFirstPage}>
-          <a className="page-link">First</a>
-        </li>
-        <li className="page-item" onClick={goToPreviousPage}>
-          <a className="page-link">Previous</a>
-        </li>
+    <div>
+      <div className="btn-group d-none d-lg-block justify-content-center my-2">
+	  	<button type="button" className="btn border" onClick={goToFirstPage}>First</button>
+        <button type="button" className="btn border" onClick={goToPreviousPage}>Previous</button>
         {getPaginationGroup().map((item, index) => (
-          <li className={ item == currentPage ? "page-item active" : "page-item"} onClick={changePage}>
-            <a className="page-link">{item}</a>
-          </li>
+          <button type="button" className={ item === currentPage ? "btn border btn-primary" : "btn border"} onClick={changePage}>
+            {item}
+          </button>
         ))}
-        <li className="page-item" onClick={goToNextPage}>
-          <a className="page-link">Next</a>
-        </li>
-		<li className="page-item" onClick={goToLastPage}>
-          <a className="page-link">Last ({pages})</a>
-        </li>
-      </ul>
+        <button type="button" className="btn border" onClick={goToNextPage}>
+          Next
+        </button>
+		<button type="button" className="btn border" onClick={goToLastPage}>
+          Last ({pages})
+        </button>
+      </div>
+      <div className="btn-group d-block d-lg-none justify-content-center my-2">
+	  	{currentPage > 2 ?
+	  		<button type="button" className="btn border" onClick={goToFirstPage}>1</button> : <></>
+		}
+        {miniGetPaginationGroup().map((item, index) => (
+          <button type="button" className={ item === currentPage ? "btn border btn-primary" : "btn border"} onClick={changePage}>
+            {item}
+          </button>
+        ))}
+		{currentPage < pages - 1 ?
+			<button type="button" className="btn border" onClick={goToLastPage}>
+        	{pages}
+        	</button>
+			: <></> }
+      </div>
       <div>
-		  { loader ? <></> : <div className="spinner-grow text-info"></div>}
+		  { loader ? <></> : <div className="spinner-grow text-info my-2"></div>}
 		{ list.items ? 
 		<>
         {getPaginatedData().map((d: any, idx: any) => (
           <Rows key={idx} data={d} />
         ))
 		}
-		</> : <>Non ci sono elementi visualizzabili</>}
+		</> : <div>Non ci sono elementi visualizzabili</div>}
       </div>
     </div>
   );

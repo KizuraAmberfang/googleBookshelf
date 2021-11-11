@@ -1,6 +1,5 @@
 import LinesEllipsis from "react-lines-ellipsis";
 import { Link } from "react-router-dom";
-import Book from "../Pages/Book";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBook } from '@fortawesome/free-solid-svg-icons'
 
@@ -14,14 +13,14 @@ function Rows(props: any) {
     volumeInfo: { publishedDate },
   } = props.data;
   var smallThumbnail = props.data.volumeInfo?.imageLinks?.smallThumbnail
-  if (smallThumbnail == undefined)
+  if (smallThumbnail === undefined)
 	smallThumbnail = ""
   return ( props.data ?
     <div className="container-lg container-fluid py-3 my-3 bg-light border">
       <div className="row">
         <div className="col-lg-2">
 			<Link to="/Book" state={props.data}>
-				{ smallThumbnail != "" ?
+				{ smallThumbnail !== "" ?
 				<img src={smallThumbnail} className="img-thumbnail" alt="img" />
 				:
 				<FontAwesomeIcon icon={faBook} className="img-thumbnail my-4" size="4x" />
@@ -29,10 +28,10 @@ function Rows(props: any) {
 			</Link>
 		</div>
         <div className="col-lg-10">
-        	<div className="row text-left text-lg-left">
+        	<div className="row justify-content-center justify-content-lg-start">
             	<h2>{title}</h2>
 			</div>
-			<div className="row text-left text-lg-left">
+			<div className="row justify-content-center justify-content-lg-start">
             	<h4>{subtitle}</h4>
           	</div>
           <div className="row text-left text-lg-left">{authors}</div>
@@ -44,7 +43,7 @@ function Rows(props: any) {
 				<span> - </span> : <></>
 			}
 			{ publishedDate ?
-				<>{publishedDate}</> : <></>
+				<>{publishedDate.substring(0,4)}</> : <></>
 			}
 		</div>								
 		<div className="row text-left pt-2">
