@@ -152,7 +152,7 @@ const Pagination: FC<ChildProps> = ({
 		{ list.items ? 
 		<>
         {getPaginatedData().map((d: any, idx: any) => (
-          <Rows key={idx} data={d} />
+          <Rows key={idx} data={d} item={currentPage}/>
         ))
 		}
 		</> : <div>Non ci sono elementi visualizzabili</div>}

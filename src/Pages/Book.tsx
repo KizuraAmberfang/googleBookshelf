@@ -10,16 +10,10 @@ function Book () {
 		volumeInfo: { publisher },
 		volumeInfo: { publishedDate },
 		volumeInfo: { pageCount},
-		volumeInfo: { language },
 		volumeInfo: { infoLink }
 	  } = location.state
 	var image = location.state.volumeInfo?.imageLinks?.thumbnail;
 	return (
-		// 	di {authors}
-		// 	Editore: {publisher}
-		// 	Pagine: {pageCount}
-		// 	Lingua: {language}
-		// 	Descrizione: {description}
 		<div className="container py-5">
 		<div className="card">
 			<div className="card-header">
@@ -29,16 +23,23 @@ function Book () {
 				}
 			</div>
 			<div className="card-body">
-				<div className="row no-gutters">
+				<div>
 					{ image ? 
-					<div className="col-auto">
+					<div className="mb-3">
 						<img src={image} className="img-fluid" alt="" />
 					</div> : <></>
 					}
 					<div className="col">
-						<div className="card-block px-2">
+						<div className="card-block px-2 text-left">
+								<p>Autori: { authors.map( (author :string) => author + ' ') }</p> 
+								{ publisher ? 
+									<p>Editore: {publisher}</p> : <></>}
+								{ publishedDate ?
+								<p>Anno di pubblicazione: {publishedDate.substr(0,4)}</p> : <></>}
+								{ pageCount ?
+								<p>Pagine: {pageCount}</p> : <></>}
 							{ description ?
-								<p className="card-text">{description}</p>
+								<p className="card-text text-justify">{description}</p>
 								: <p>Nessuna descrizione disponibile</p>
 							}
 						</div>

@@ -3,6 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './custom.scss';
 
+// import { useNavigate } from "react-router"; 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Main from './Pages/Main';
 import Book from './Pages/Book';
@@ -12,6 +13,7 @@ function App() {
 	const [inputValue, setInputValue] = useState("");
 	const [row, setRow] = useState(10);
 	const [currentPage, setCurrentPage] = useState(1);
+	// const history = useNavigate();
 
   	return (
     	<div className="App">
