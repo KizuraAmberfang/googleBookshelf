@@ -14,7 +14,6 @@ function Rows(props: any) {
     volumeInfo: { publishedDate },
   } = props.data;
 
-  var item = props.item;
   var smallThumbnail = props.data.volumeInfo?.imageLinks?.smallThumbnail
 
   if (smallThumbnail === undefined)
